@@ -1,0 +1,46 @@
+body {
+    margin: 0px;
+}
+
+header {
+    background-color: rgb(62, 62, 184);
+}
+
+header>h1 {
+    padding: 24px;
+    margin: 0px;
+    text-align: center;
+}
+
+#mainContainer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 8vh auto 8vh;
+}
+
+#boardContainer {
+    display: grid;
+    grid-column-start: 2;
+    grid-row-start: 2;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border: 10px ridge darkblue;
+    border-radius: 10px;
+}
+
+.square {
+    width: 3vw;
+    height: 3vw;
+    border: 1px dashed;
+}
+
+footer {
+    background-color: rgb(62, 62, 184);
+}
+
+footer>p {
+    font-size: 24px;
+    text-align: center;
+    margin: 0px;
+    padding: 24px;
+}
