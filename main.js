@@ -1,7 +1,6 @@
 //"use strict";
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-let raf;
 
 let arrowUp;
 let arrowDown;
@@ -36,7 +35,23 @@ function draw() {
     pacman.xCord += 2;
   }
 
-  raf = window.requestAnimationFrame(draw);
+  let board = [
+    [0, 0, 0, canvas.clientHeight],
+    [0, 0, canvas.clientWidth, 0],
+    [canvas.clientWidth, 0, canvas.clientWidth, canvas.clientHeight],
+    [0, 0, 0, canvas.clientHeight],
+  ];
+
+  board.forEach((cord) => {
+    ctx.beginPath();
+    ctx.strokeStyle = "darkblue";
+    ctx.lineWidth = 10;
+    ctx.moveTo(cord[0], cord[1]);
+    ctx.lineTo(cord[2], cord[3]);
+    ctx.stroke();
+  });
+
+  window.requestAnimationFrame(draw);
 }
 
 window.addEventListener("keydown", (e) => {
