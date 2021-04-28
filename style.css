@@ -7,7 +7,7 @@ header {
 }
 
 header>h1 {
-    padding: 24px;
+    padding: 12px;
     margin: 0px;
     text-align: center;
 }
@@ -32,5 +32,5 @@ footer>p {
     font-size: 24px;
     text-align: center;
     margin: 0px;
-    padding: 24px;
+    padding: 12px;
 }

@@ -3,6 +3,11 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let raf;
 
+let arrowUp;
+let arrowDown;
+let arrowRight;
+let arrowLeft;
+
 let pacman = {
   xCord: 50,
   yCord: 50,
@@ -18,26 +23,35 @@ let pacman = {
 };
 
 function draw() {
-  ctx.clearRect(0, 0, 1000, 800);
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   pacman.drawPacman();
-  pacman.xCord += 2;
-  pacman.yCord += 2;
+
+  if (arrowUp) {
+    pacman.yCord -= 2;
+  } else if (arrowDown) {
+    pacman.yCord += 2;
+  } else if (arrowLeft) {
+    pacman.xCord -= 2;
+  } else if (arrowRight) {
+    pacman.xCord += 2;
+  }
+
   raf = window.requestAnimationFrame(draw);
 }
 
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      raf = window.requestAnimationFrame(draw);
+      arrowUp = true;
       break;
     case "ArrowDown":
-      raf = window.requestAnimationFrame(draw);
+      arrowDown = true;
       break;
     case "ArrowLeft":
-      raf = window.requestAnimationFrame(draw);
+      arrowLeft = true;
       break;
     case "ArrowRight":
-      raf = window.requestAnimationFrame(draw);
+      arrowRight = true;
       break;
   }
 });
@@ -45,18 +59,18 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      window.cancelAnimationFrame(raf);
+      arrowUp = false;
       break;
     case "ArrowDown":
-      window.cancelAnimationFrame(raf);
+      arrowDown = false;
       break;
     case "ArrowLeft":
-      window.cancelAnimationFrame(raf);
+      arrowLeft = false;
       break;
     case "ArrowRight":
-      window.cancelAnimationFrame(raf);
+      arrowRight = false;
       break;
   }
 });
 
-pacman.drawPacman();
+draw();
