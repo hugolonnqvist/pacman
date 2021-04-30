@@ -8,13 +8,20 @@ let arrowRight;
 let arrowLeft;
 
 let pacman = {
-  xCord: 50,
-  yCord: 50,
-  radius: 20,
+  xCord: 37,
+  yCord: 37,
+  radius: 13,
   color: "yellow",
   drawPacman: function () {
     ctx.beginPath();
-    ctx.arc(this.xCord, this.yCord, this.radius, 0, Math.PI * 2, true);
+    ctx.arc(
+      this.xCord,
+      this.yCord,
+      this.radius,
+      Math.PI / 7,
+      -Math.PI / 7,
+      false
+    );
     ctx.closePath();
     ctx.fillStyle = this.color;
     ctx.fill();
@@ -35,17 +42,35 @@ function draw() {
     pacman.xCord += 2;
   }
 
-  let board = [
+  let board1 = [
     [0, 0, 0, canvas.clientHeight],
     [0, 0, canvas.clientWidth, 0],
     [canvas.clientWidth, 0, canvas.clientWidth, canvas.clientHeight],
-    [0, 0, 0, canvas.clientHeight],
+    [0, canvas.clientHeight, canvas.clientWidth, canvas.clientHeight],
   ];
 
-  board.forEach((cord) => {
+  let board = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  board1.forEach((cord) => {
     ctx.beginPath();
     ctx.strokeStyle = "darkblue";
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 5;
     ctx.moveTo(cord[0], cord[1]);
     ctx.lineTo(cord[2], cord[3]);
     ctx.stroke();
