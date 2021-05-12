@@ -19,9 +19,10 @@ let arrowLeft;
 //7: straight line horizontal
 //8: straight line downwards
 //9: rond corner leftup
-//10:round corner leftdown
+//10: round corner leftdown
 //11: rond corner rightup
 //12: round corner rightdown
+//13: coin
 
 // prettier-ignore
 let board = [
@@ -29,35 +30,35 @@ let board = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [3,1,1,1,1,1,1,1,1,1,1,1,1,5,3,1,1,1,1,1,1,1,1,1,1,1,1,5],
-    [2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],
-    [2,0,3,1,1,5,0,3,1,1,1,5,0,2,2,0,3,1,1,1,5,0,3,1,1,5,0,2],
-    [2,0,2,0,0,2,0,2,0,0,0,2,0,2,2,0,2,0,0,0,2,0,2,0,0,2,0,2],
-    [2,0,4,1,1,6,0,4,1,1,1,6,0,4,6,0,4,1,1,1,6,0,4,1,1,6,0,2],
-    [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-    [2,0,3,1,1,5,0,3,5,0,3,1,1,1,1,1,1,5,0,3,5,0,3,1,1,5,0,2],
-    [2,0,4,1,1,6,0,2,2,0,4,1,1,5,3,1,1,6,0,2,2,0,4,1,1,6,0,2],
-    [2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],
-    [4,1,1,1,1,5,0,2,4,1,1,5,0,2,2,0,3,1,1,6,2,0,3,1,1,1,1,6],
-    [0,0,0,0,0,2,0,2,3,1,1,6,0,4,6,0,4,1,1,5,2,0,2,0,0,0,0,0],
-    [0,0,0,0,0,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,0,0,0,0,0],
-    [0,0,0,0,0,2,0,2,2,0,9,7,7,7,7,7,7,11,0,2,2,0,2,0,0,0,0,0],
-    [1,1,1,1,1,6,0,4,6,0,8,0,0,0,0,0,0,8,0,4,6,0,4,1,1,1,1,1],
-    [0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0],
-    [1,1,1,1,1,5,0,3,5,0,8,0,0,0,0,0,0,8,0,3,5,0,3,1,1,1,1,1],
-    [0,0,0,0,0,2,0,2,2,0,10,7,7,7,7,7,7,12,0,2,2,0,2,0,0,0,0,0],
-    [0,0,0,0,0,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,0,0,0,0,0],
-    [0,0,0,0,0,2,0,2,2,0,3,1,1,1,1,1,1,5,0,2,2,0,2,0,0,0,0,0],
-    [3,1,1,1,1,6,0,4,6,0,4,1,1,5,3,1,1,6,0,4,6,0,4,1,1,1,1,5],
-    [2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],
-    [2,0,3,1,1,5,0,3,1,1,1,5,0,2,2,0,3,1,1,1,5,0,3,1,1,5,0,2],
-    [2,0,4,1,5,2,0,4,1,1,1,6,0,4,6,0,4,1,1,1,6,0,2,3,1,6,0,2],
-    [2,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,2],
-    [4,1,5,0,2,2,0,3,5,0,3,1,1,1,1,1,1,5,0,3,5,0,2,2,0,3,1,6],
-    [3,1,6,0,4,6,0,2,2,0,4,1,1,5,3,1,1,6,0,2,2,0,4,6,0,4,1,5],
-    [2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],
-    [2,0,3,1,1,1,1,6,4,1,1,5,0,2,2,0,3,1,1,6,4,1,1,1,1,5,0,2],
-    [2,0,4,1,1,1,1,1,1,1,1,6,0,4,6,0,4,1,1,1,1,1,1,1,1,6,0,2],
-    [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+    [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
+    [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
+    [2,13,2,0,0,2,13,2,0,0,0,2,13,2,2,13,2,0,0,0,2,13,2,0,0,2,13,2],
+    [2,13,4,1,1,6,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,4,1,1,6,13,2],
+    [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
+    [2,13,3,1,1,5,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,3,1,1,5,13,2],
+    [2,13,4,1,1,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,1,1,6,13,2],
+    [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
+    [4,1,1,1,1,5,13,2,4,1,1,5,13,2,2,13,3,1,1,6,2,13,3,1,1,1,1,6],
+    [0,0,0,0,0,2,13,2,3,1,1,6,0,4,6,0,4,1,1,5,2,13,2,0,0,0,0,0],
+    [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
+    [0,0,0,0,0,2,13,2,2,0,9,7,7,7,7,7,7,11,0,2,2,13,2,0,0,0,0,0],
+    [1,1,1,1,1,6,13,4,6,0,8,0,0,0,0,0,0,8,0,4,6,13,4,1,1,1,1,1],
+    [0,0,0,0,0,0,13,0,0,0,8,0,14,15,16,17,0,8,0,0,0,13,0,0,0,0,0,0],
+    [1,1,1,1,1,5,13,3,5,0,8,0,0,0,0,0,0,8,0,3,5,13,3,1,1,1,1,1],
+    [0,0,0,0,0,2,13,2,2,0,10,7,7,7,7,7,7,12,0,2,2,13,2,0,0,0,0,0],
+    [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
+    [0,0,0,0,0,2,13,2,2,0,3,1,1,1,1,1,1,5,0,2,2,13,2,0,0,0,0,0],
+    [3,1,1,1,1,6,13,4,6,13,4,1,1,5,3,1,1,6,13,4,6,13,4,1,1,1,1,5],
+    [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
+    [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
+    [2,13,4,1,5,2,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,2,3,1,6,13,2],
+    [2,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,2],
+    [4,1,5,13,2,2,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,2,2,13,3,1,6],
+    [3,1,6,13,4,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,6,13,4,1,5],
+    [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
+    [2,13,3,1,1,1,1,6,4,1,1,5,13,2,2,13,3,1,1,6,4,1,1,1,1,5,13,2],
+    [2,13,4,1,1,1,1,1,1,1,1,6,13,4,6,13,4,1,1,1,1,1,1,1,1,6,13,2],
+    [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
     [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -65,18 +66,21 @@ let board = [
 
 let pacman = {
   xCord: 25,
-  yCord: 73,
+  yCord: 280,
   speed: 1.5,
-  radius: 9,
+  radius: 10,
+  degree1: Math.PI / 7,
+  degree2: -Math.PI / 7,
   color: "yellow",
+  coinsEaten: 0,
   drawPacman: function () {
     ctx.beginPath();
     ctx.arc(
       this.xCord,
       this.yCord,
       this.radius,
-      Math.PI / 7,
-      -Math.PI / 7,
+      this.degree1,
+      this.degree2,
       false
     );
     ctx.lineTo(this.xCord, this.yCord);
@@ -89,50 +93,72 @@ let pacman = {
 function draw() {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   pacman.drawPacman();
+  checkForWin();
+  eatCoins();
   drawMap();
 
-  if (arrowUp && checkWallUp()) {
+  if (arrowUp && checkForWallUpOrDown(1)) {
+    rotatePacman(-Math.PI / 4, -Math.PI / 1.3);
+    pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
     pacman.yCord -= pacman.speed;
-  } else if (arrowDown && checkWallDown()) {
+  } else if (arrowDown && checkForWallUpOrDown(-1)) {
+    rotatePacman(Math.PI / 1.4, Math.PI / 4);
+    pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
     pacman.yCord += pacman.speed;
-  } else if (arrowLeft && checkWallLeft()) {
+  } else if (arrowLeft && checkForWallLeftOrRight(1)) {
+    rotatePacman(-Math.PI / 1.2, Math.PI / 1.3);
+    pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
     pacman.xCord -= pacman.speed;
-  } else if (arrowRight && checkWallRight()) {
+  } else if (arrowRight && checkForWallLeftOrRight(-1)) {
+    rotatePacman(Math.PI / 7, -Math.PI / 7);
+    pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
     pacman.xCord += pacman.speed;
   }
-
   window.requestAnimationFrame(draw);
 }
 
-function checkWallUp() {
+//Value decides if the function checks for walls up or down
+function checkForWallUpOrDown(value) {
   return (
-    board[Math.floor((pacman.yCord + pacman.radius) / 16) - 1][
+    board[Math.floor((pacman.yCord + 7 * value) / 16) - value][
       Math.floor(pacman.xCord / 16)
-    ] === 0
+    ] === 0 ||
+    board[Math.floor((pacman.yCord + 7 * value) / 16) - value][
+      Math.floor(pacman.xCord / 16)
+    ] === 13
   );
 }
 
-function checkWallDown() {
+//Value decides if the function checks for walls left or right
+function checkForWallLeftOrRight(value) {
   return (
-    board[Math.floor((pacman.yCord - pacman.radius) / 16) + 1][
-      Math.floor(pacman.xCord / 16)
-    ] === 0
+    board[Math.floor(pacman.yCord / 16)][
+      Math.floor((pacman.xCord + 7 * value) / 16) - value
+    ] === 0 ||
+    board[Math.floor(pacman.yCord / 16)][
+      Math.floor((pacman.xCord + 7 * value) / 16) - value
+    ] === 13
   );
 }
 
-function checkWallLeft() {
-  return (
-    board[Math.floor(pacman.yCord / 16)][
-      Math.floor((pacman.xCord + pacman.radius) / 16) - 1
-    ] === 0
-  );
+function rotatePacman(degree1, degree2) {
+  pacman.degree1 = degree1;
+  pacman.degree2 = degree2;
 }
-function checkWallRight() {
-  return (
-    board[Math.floor(pacman.yCord / 16)][
-      Math.floor((pacman.xCord - pacman.radius) / 16) + 1
-    ] === 0
-  );
+
+function eatCoins() {
+  if (
+    board[Math.floor(pacman.yCord / 16)][Math.floor(pacman.xCord / 16)] === 13
+  ) {
+    board[Math.floor(pacman.yCord / 16)][Math.floor(pacman.xCord / 16)] = 0;
+    pacman.coinsEaten++;
+  }
+}
+
+function checkForWin() {
+  if (pacman.coinsEaten === 250) {
+    alert("You have won!");
+  }
 }
 
 function drawMap() {
@@ -144,13 +170,13 @@ function drawMap() {
   let img4 = new Image(tileSize, tileSize);
   let img5 = new Image(tileSize, tileSize);
   let img6 = new Image(tileSize, tileSize);
-
   let img7 = new Image(tileSize, tileSize);
   let img8 = new Image(tileSize, tileSize);
   let img9 = new Image(tileSize, tileSize);
   let img10 = new Image(tileSize, tileSize);
   let img11 = new Image(tileSize, tileSize);
   let img12 = new Image(tileSize, tileSize);
+  let img13 = new Image(tileSize, tileSize);
 
   img1.src = "./images/rosekane_228.png";
   img2.src = "./images/rosekane_227.png";
@@ -165,6 +191,7 @@ function drawMap() {
   img10.src = "./images/rosekane_110.png";
   img11.src = "./images/rosekane_113.png";
   img12.src = "./images/rosekane_111.png";
+  img13.src = "./images/rosekane_0.png";
 
   let images = [
     img1,
@@ -179,6 +206,7 @@ function drawMap() {
     img10,
     img11,
     img12,
+    img13,
   ];
 
   for (let y = 0; y < canvas.clientHeight / tileSize; y++) {
@@ -202,7 +230,7 @@ function drawMap() {
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      if (checkWallUp()) {
+      if (checkForWallUpOrDown(1)) {
         arrowUp = true;
         arrowDown = false;
         arrowLeft = false;
@@ -210,7 +238,7 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowDown":
-      if (checkWallDown()) {
+      if (checkForWallUpOrDown(-1)) {
         arrowDown = true;
         arrowUp = false;
         arrowLeft = false;
@@ -218,7 +246,7 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowLeft":
-      if (checkWallLeft()) {
+      if (checkForWallLeftOrRight(1)) {
         arrowLeft = true;
         arrowUp = false;
         arrowDown = false;
@@ -226,31 +254,14 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowRight":
-      if (checkWallRight()) {
+      if (checkForWallLeftOrRight(-1)) {
         arrowRight = true;
         arrowUp = false;
-        arrowDown = false;
         arrowLeft = false;
+        arrowDown = false;
       }
       break;
   }
 });
-/*
-window.addEventListener("keyup", (e) => {
-  switch (e.key) {
-    case "ArrowUp":
-      arrowUp = false;
-      break;
-    case "ArrowDown":
-      arrowDown = false;
-      break;
-    case "ArrowLeft":
-      arrowLeft = false;
-      break;
-    case "ArrowRight":
-      arrowRight = false;
-      break;
-  }
-});*/
 
 draw();
