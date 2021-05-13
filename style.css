@@ -3,20 +3,17 @@ body {
     background-color: black;
 }
 
-header {
-    background-color: rgb(62, 62, 184);
-}
-
 header>h1 {
-    padding: 12px;
+    padding: 0px;
     margin: 0px;
+    color: blue;
     text-align: center;
 }
 
 #mainContainer {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    grid-template-rows: 2vh auto 2vh;
+    grid-template-rows: 0vh auto 0vh;
 }
 
 #canvas {

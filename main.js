@@ -79,6 +79,22 @@ class Ghost {
 
     ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
   }
+
+  moveUp() {
+    this.yCord -= this.speed;
+  }
+
+  moveDowm() {
+    this.yCord += this.speed;
+  }
+
+  moveLeft() {
+    this.xCord -= this.speed;
+  }
+
+  moveRight() {
+    this.xCord += this.speed;
+  }
 }
 
 let blinky = new Ghost(175, 270, 22, 1.5, "./images/rosekane_44.png");
@@ -174,6 +190,7 @@ function draw() {
   inky.drawGhost();
   clyde.drawGhost();
 
+  
   checkForWin();
   eatCoins();
   drawMap();
