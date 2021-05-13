@@ -1,19 +1,4 @@
 //"use strict";
-class Ghost {
-  constructor(xCord, yCord, speed, color, img) {
-    this.xCord = xCord;
-    this.yCord = yCord;
-    this.speed = speed;
-    this.color = color;
-    this.img = img;
-  }
-}
-
-const clyde = new Ghost(100, 100, 1.2, "yellow");
-const blinky = new Ghost(100, 200, 1.2, "red");
-const pinky = new Ghost(100, 300, 1.2, "pink");
-const inky = new Ghost(100, 400, 1.2, "blue");
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -78,6 +63,8 @@ let board = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 ];
+
+
 
 let pacman = {
   xCord: 25,
