@@ -64,7 +64,80 @@ let board = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 ];
 
+class Ghost {
+  constructor(xCord, yCord, size, speed, imgSrc) {
+    this.xCord = xCord;
+    this.yCord = yCord;
+    this.size = size;
+    this.speed = speed;
+    this.imgSrc = imgSrc;
+  }
 
+  drawGhost() {
+    let img = new Image(this.size, this.size);
+    img.src = this.imgSrc;
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  }
+}
+
+let blinky = new Ghost(175, 270, 22, 1.5, "./images/rosekane_44.png");
+let pinky = new Ghost(200, 270, 22, 1.5, "./images/rosekane_23.png");
+let inky = new Ghost(225, 270, 22, 1.5, "./images/rosekane_19.png");
+let clyde = new Ghost(250, 270, 22, 1.5, "./images/rosekane_27.png");
+
+/*
+let blinky = {
+  xCord: 175,  
+  yCord: 270,
+  size: 22,
+  speed: 1.5,
+  drawGhost: function () {
+    let img = new Image(this.size, this.size);
+    img.src = "./images/rosekane_44.png";
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  },
+};
+
+let pinky = {
+  xCord: 200,
+  yCord: 270,
+  size: 22,
+  speed: 1.5,
+  drawGhost: function () {
+    let img = new Image(this.size, this.size);
+    img.src = "./images/rosekane_23.png";
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  },
+};
+
+let inky = {
+  xCord: 225,
+  yCord: 270,
+  size: 22,
+  speed: 1.5,
+  drawGhost: function () {
+    let img = new Image(this.size, this.size);
+    img.src = "./images/rosekane_19.png";
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  },
+};
+
+let clyde = {
+  xCord: 250,
+  yCord: 270,
+  size: 22,
+  speed: 1.5,
+  drawGhost: function () {
+    let img = new Image(this.size, this.size);
+    img.src = "./images/rosekane_27.png";
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  },
+};*/
 
 let pacman = {
   xCord: 25,
@@ -95,6 +168,12 @@ let pacman = {
 function draw() {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   pacman.drawPacman();
+
+  blinky.drawGhost();
+  pinky.drawGhost();
+  inky.drawGhost();
+  clyde.drawGhost();
+
   checkForWin();
   eatCoins();
   drawMap();
