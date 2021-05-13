@@ -1,4 +1,36 @@
-//"use strict";
+class Ghost {
+  constructor(xCord, yCord, size, speed, imgSrc) {
+    this.xCord = xCord;
+    this.yCord = yCord;
+    this.size = size;
+    this.speed = speed;
+    this.imgSrc = imgSrc;
+  }
+
+  drawGhost() {
+    let img = new Image(this.size, this.size);
+    img.src = this.imgSrc;
+
+    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
+  }
+
+  moveUp() {
+    this.yCord -= this.speed;
+  }
+
+  moveDowm() {
+    this.yCord += this.speed;
+  }
+
+  moveLeft() {
+    this.xCord -= this.speed;
+  }
+
+  moveRight() {
+    this.xCord += this.speed;
+  }
+}
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -63,39 +95,6 @@ let board = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 ];
-
-class Ghost {
-  constructor(xCord, yCord, size, speed, imgSrc) {
-    this.xCord = xCord;
-    this.yCord = yCord;
-    this.size = size;
-    this.speed = speed;
-    this.imgSrc = imgSrc;
-  }
-
-  drawGhost() {
-    let img = new Image(this.size, this.size);
-    img.src = this.imgSrc;
-
-    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
-  }
-
-  moveUp() {
-    this.yCord -= this.speed;
-  }
-
-  moveDowm() {
-    this.yCord += this.speed;
-  }
-
-  moveLeft() {
-    this.xCord -= this.speed;
-  }
-
-  moveRight() {
-    this.xCord += this.speed;
-  }
-}
 
 let blinky = new Ghost(175, 270, 22, 1.5, "./images/rosekane_44.png");
 let pinky = new Ghost(200, 270, 22, 1.5, "./images/rosekane_23.png");
@@ -190,24 +189,34 @@ function draw() {
   inky.drawGhost();
   clyde.drawGhost();
 
-  
+  ghostCalculateTarget(blinky.yCord, blinky.xCord, blinky.speed);
+
   checkForWin();
   eatCoins();
   drawMap();
 
-  if (arrowUp && checkForWallUpOrDown(1)) {
+  if (arrowUp && checkForWallUpOrDown(pacman.yCord, pacman.xCord, false)) {
     rotatePacman(-Math.PI / 4, -Math.PI / 1.3);
     pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
     pacman.yCord -= pacman.speed;
-  } else if (arrowDown && checkForWallUpOrDown(-1)) {
+  } else if (
+    arrowDown &&
+    checkForWallUpOrDown(pacman.yCord, pacman.xCord, true)
+  ) {
     rotatePacman(Math.PI / 1.4, Math.PI / 4);
     pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
     pacman.yCord += pacman.speed;
-  } else if (arrowLeft && checkForWallLeftOrRight(1)) {
+  } else if (
+    arrowLeft &&
+    checkForWallLeftOrRight(pacman.yCord, pacman.xCord, false)
+  ) {
     rotatePacman(-Math.PI / 1.2, Math.PI / 1.3);
     pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
     pacman.xCord -= pacman.speed;
-  } else if (arrowRight && checkForWallLeftOrRight(-1)) {
+  } else if (
+    arrowRight &&
+    checkForWallLeftOrRight(pacman.yCord, pacman.xCord, true)
+  ) {
     rotatePacman(Math.PI / 7, -Math.PI / 7);
     pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
     pacman.xCord += pacman.speed;
@@ -215,26 +224,34 @@ function draw() {
   window.requestAnimationFrame(draw);
 }
 
-//Value decides if the function checks for walls up or down
-function checkForWallUpOrDown(value) {
+//If down is true, check for  wall down, else check for wall up
+function checkForWallUpOrDown(yCord, xCord, down) {
+  let value = 1;
+  if (down) {
+    value = -1;
+  }
   return (
-    board[Math.floor((pacman.yCord + 7 * value) / 16) - value][
-      Math.floor(pacman.xCord / 16)
+    board[Math.floor((yCord + 7 * value) / 16) - value][
+      Math.floor(xCord / 16)
     ] === 0 ||
-    board[Math.floor((pacman.yCord + 7 * value) / 16) - value][
-      Math.floor(pacman.xCord / 16)
+    board[Math.floor((yCord + 7 * value) / 16) - value][
+      Math.floor(xCord / 16)
     ] === 13
   );
 }
 
-//Value decides if the function checks for walls left or right
-function checkForWallLeftOrRight(value) {
+//If right is true, check for  wall right, else check for wall left
+function checkForWallLeftOrRight(yCord, xCord, right) {
+  let value = 1;
+  if (right) {
+    value = -1;
+  }
   return (
-    board[Math.floor(pacman.yCord / 16)][
-      Math.floor((pacman.xCord + 7 * value) / 16) - value
+    board[Math.floor(yCord / 16)][
+      Math.floor((xCord + 7 * value) / 16) - value
     ] === 0 ||
-    board[Math.floor(pacman.yCord / 16)][
-      Math.floor((pacman.xCord + 7 * value) / 16) - value
+    board[Math.floor(yCord / 16)][
+      Math.floor((xCord + 7 * value) / 16) - value
     ] === 13
   );
 }
@@ -256,6 +273,41 @@ function eatCoins() {
 function checkForWin() {
   if (pacman.coinsEaten === 250) {
     alert("You have won!");
+  }
+}
+
+function ghostCalculateTarget(yCord, xCord, speed) {
+  let possibleDirections = [];
+  let dir1 = "up";
+  let dir2 = "down";
+  let dir3 = "left";
+  let dir4 = "right";
+
+  if (checkForWallUpOrDown(yCord, xCord, false)) {
+    possibleDirections.push(dir1);
+  }
+  if (checkForWallUpOrDown(yCord, xCord, true)) {
+    possibleDirections.push(dir2);
+  }
+  if (checkForWallLeftOrRight(yCord, xCord, false)) {
+    possibleDirections.push(dir3);
+  }
+  if (checkForWallLeftOrRight(yCord, xCord, true)) {
+    possibleDirections.push(dir4);
+  }
+
+  let direction = Math.floor(Math.random() * possibleDirections.length);
+  let chosenDirection = possibleDirections[direction];
+
+
+  if (chosenDirection === "up") {
+    blinky.yCord -= speed;
+  } else if (chosenDirection === "down") {
+    blinky.yCord += speed;
+  } else if (chosenDirection === "left") {
+    blinky.xCord -= speed;
+  } else if (chosenDirection === "right") {
+    blinky.xCord += speed;
   }
 }
 
@@ -328,7 +380,7 @@ function drawMap() {
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      if (checkForWallUpOrDown(1)) {
+      if (checkForWallUpOrDown(pacman.yCord, pacman.xCord, false)) {
         arrowUp = true;
         arrowDown = false;
         arrowLeft = false;
@@ -336,7 +388,7 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowDown":
-      if (checkForWallUpOrDown(-1)) {
+      if (checkForWallUpOrDown(pacman.yCord, pacman.xCord, true)) {
         arrowDown = true;
         arrowUp = false;
         arrowLeft = false;
@@ -344,7 +396,7 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowLeft":
-      if (checkForWallLeftOrRight(1)) {
+      if (checkForWallLeftOrRight(pacman.yCord, pacman.xCord, false)) {
         arrowLeft = true;
         arrowUp = false;
         arrowDown = false;
@@ -352,7 +404,7 @@ window.addEventListener("keydown", (e) => {
       }
       break;
     case "ArrowRight":
-      if (checkForWallLeftOrRight(-1)) {
+      if (checkForWallLeftOrRight(pacman.yCord, pacman.xCord, true)) {
         arrowRight = true;
         arrowUp = false;
         arrowLeft = false;
