@@ -1,10 +1,68 @@
+//0: empty
+//1: straight line horizontal
+//2: straight line downwards
+//3: rond corner leftup
+//4:round corner leftdown
+//5: rond corner rightup
+//6: round corner rightdown
+
+//Ghost box images:
+//7: straight line horizontal
+//8: straight line downwards
+//9: rond corner leftup
+//10: round corner leftdown
+//11: rond corner rightup
+//12: round corner rightdown
+//13: coin
+
+// prettier-ignore
+let board = [
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [3,1,1,1,1,1,1,1,1,1,1,1,1,5,3,1,1,1,1,1,1,1,1,1,1,1,1,5],
+  [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
+  [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
+  [2,13,2,0,0,2,13,2,0,0,0,2,13,2,2,13,2,0,0,0,2,13,2,0,0,2,13,2],
+  [2,13,4,1,1,6,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,4,1,1,6,13,2],
+  [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
+  [2,13,3,1,1,5,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,3,1,1,5,13,2],
+  [2,13,4,1,1,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,1,1,6,13,2],
+  [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
+  [4,1,1,1,1,5,13,2,4,1,1,5,13,2,2,13,3,1,1,6,2,13,3,1,1,1,1,6],
+  [0,0,0,0,0,2,13,2,3,1,1,6,0,4,6,0,4,1,1,5,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,9,7,7,7,7,7,7,11,0,2,2,13,2,0,0,0,0,0],
+  [1,1,1,1,1,6,13,4,6,0,8,0,0,0,0,0,0,8,0,4,6,13,4,1,1,1,1,1],
+  [0,0,0,0,0,0,13,0,0,0,8,0,14,15,16,17,0,8,0,0,0,13,0,0,0,0,0,0],
+  [1,1,1,1,1,5,13,3,5,0,8,0,0,0,0,0,0,8,0,3,5,13,3,1,1,1,1,1],
+  [0,0,0,0,0,2,13,2,2,0,10,7,7,7,7,7,7,12,0,2,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,3,1,1,1,1,1,1,5,0,2,2,13,2,0,0,0,0,0],
+  [3,1,1,1,1,6,13,4,6,13,4,1,1,5,3,1,1,6,13,4,6,13,4,1,1,1,1,5],
+  [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
+  [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
+  [2,13,4,1,5,2,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,2,3,1,6,13,2],
+  [2,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,2],
+  [4,1,5,13,2,2,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,2,2,13,3,1,6],
+  [3,1,6,13,4,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,6,13,4,1,5],
+  [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
+  [2,13,3,1,1,1,1,6,4,1,1,5,13,2,2,13,3,1,1,6,4,1,1,1,1,5,13,2],
+  [2,13,4,1,1,1,1,1,1,1,1,6,13,4,6,13,4,1,1,1,1,1,1,1,1,6,13,2],
+  [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
+  [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+];
+
 class Ghost {
-  constructor(xCord, yCord, size, speed, imgSrc) {
+  constructor(xCord, yCord, size, speed, imgSrc, direction) {
     this.xCord = xCord;
     this.yCord = yCord;
     this.size = size;
     this.speed = speed;
     this.imgSrc = imgSrc;
+    this.direction = direction;
   }
 
   drawGhost() {
@@ -34,131 +92,19 @@ class Ghost {
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let arrowUp;
-let arrowDown;
-let arrowRight;
-let arrowLeft;
+let direction = "right";
+let nextDirection = "";
 
-//0: empty
-//1: straight line horizontal
-//2: straight line downwards
-//3: rond corner leftup
-//4:round corner leftdown
-//5: rond corner rightup
-//6: round corner rightdown
-
-//Ghost box images:
-//7: straight line horizontal
-//8: straight line downwards
-//9: rond corner leftup
-//10: round corner leftdown
-//11: rond corner rightup
-//12: round corner rightdown
-//13: coin
-
-// prettier-ignore
-let board = [
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [3,1,1,1,1,1,1,1,1,1,1,1,1,5,3,1,1,1,1,1,1,1,1,1,1,1,1,5],
-    [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
-    [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
-    [2,13,2,0,0,2,13,2,0,0,0,2,13,2,2,13,2,0,0,0,2,13,2,0,0,2,13,2],
-    [2,13,4,1,1,6,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,4,1,1,6,13,2],
-    [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
-    [2,13,3,1,1,5,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,3,1,1,5,13,2],
-    [2,13,4,1,1,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,1,1,6,13,2],
-    [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
-    [4,1,1,1,1,5,13,2,4,1,1,5,13,2,2,13,3,1,1,6,2,13,3,1,1,1,1,6],
-    [0,0,0,0,0,2,13,2,3,1,1,6,0,4,6,0,4,1,1,5,2,13,2,0,0,0,0,0],
-    [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
-    [0,0,0,0,0,2,13,2,2,0,9,7,7,7,7,7,7,11,0,2,2,13,2,0,0,0,0,0],
-    [1,1,1,1,1,6,13,4,6,0,8,0,0,0,0,0,0,8,0,4,6,13,4,1,1,1,1,1],
-    [0,0,0,0,0,0,13,0,0,0,8,0,14,15,16,17,0,8,0,0,0,13,0,0,0,0,0,0],
-    [1,1,1,1,1,5,13,3,5,0,8,0,0,0,0,0,0,8,0,3,5,13,3,1,1,1,1,1],
-    [0,0,0,0,0,2,13,2,2,0,10,7,7,7,7,7,7,12,0,2,2,13,2,0,0,0,0,0],
-    [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
-    [0,0,0,0,0,2,13,2,2,0,3,1,1,1,1,1,1,5,0,2,2,13,2,0,0,0,0,0],
-    [3,1,1,1,1,6,13,4,6,13,4,1,1,5,3,1,1,6,13,4,6,13,4,1,1,1,1,5],
-    [2,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,2],
-    [2,13,3,1,1,5,13,3,1,1,1,5,13,2,2,13,3,1,1,1,5,13,3,1,1,5,13,2],
-    [2,13,4,1,5,2,13,4,1,1,1,6,13,4,6,13,4,1,1,1,6,13,2,3,1,6,13,2],
-    [2,13,13,13,2,2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2,2,13,13,13,2],
-    [4,1,5,13,2,2,13,3,5,13,3,1,1,1,1,1,1,5,13,3,5,13,2,2,13,3,1,6],
-    [3,1,6,13,4,6,13,2,2,13,4,1,1,5,3,1,1,6,13,2,2,13,4,6,13,4,1,5],
-    [2,13,13,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,2,2,13,13,13,13,13,13,2],
-    [2,13,3,1,1,1,1,6,4,1,1,5,13,2,2,13,3,1,1,6,4,1,1,1,1,5,13,2],
-    [2,13,4,1,1,1,1,1,1,1,1,6,13,4,6,13,4,1,1,1,1,1,1,1,1,6,13,2],
-    [2,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,2],
-    [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-];
-
-let blinky = new Ghost(175, 270, 22, 1.5, "./images/rosekane_44.png");
-let pinky = new Ghost(200, 270, 22, 1.5, "./images/rosekane_23.png");
-let inky = new Ghost(225, 270, 22, 1.5, "./images/rosekane_19.png");
-let clyde = new Ghost(250, 270, 22, 1.5, "./images/rosekane_27.png");
-
-/*
-let blinky = {
-  xCord: 175,  
-  yCord: 270,
-  size: 22,
-  speed: 1.5,
-  drawGhost: function () {
-    let img = new Image(this.size, this.size);
-    img.src = "./images/rosekane_44.png";
-
-    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
-  },
-};
-
-let pinky = {
-  xCord: 200,
-  yCord: 270,
-  size: 22,
-  speed: 1.5,
-  drawGhost: function () {
-    let img = new Image(this.size, this.size);
-    img.src = "./images/rosekane_23.png";
-
-    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
-  },
-};
-
-let inky = {
-  xCord: 225,
-  yCord: 270,
-  size: 22,
-  speed: 1.5,
-  drawGhost: function () {
-    let img = new Image(this.size, this.size);
-    img.src = "./images/rosekane_19.png";
-
-    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
-  },
-};
-
-let clyde = {
-  xCord: 250,
-  yCord: 270,
-  size: 22,
-  speed: 1.5,
-  drawGhost: function () {
-    let img = new Image(this.size, this.size);
-    img.src = "./images/rosekane_27.png";
-
-    ctx.drawImage(img, this.xCord, this.yCord, this.size, this.size);
-  },
-};*/
+let blinky = new Ghost(175, 270, 16, 1, "./images/rosekane_44.png", "up");
+let pinky = new Ghost(200, 270, 16, 1, "./images/rosekane_23.png", "up");
+let inky = new Ghost(225, 270, 16, 1, "./images/rosekane_19.png", "up");
+let clyde = new Ghost(250, 270, 16, 1, "./images/rosekane_27.png", "up");
 
 let pacman = {
-  xCord: 25,
+  xCord: 16,
   yCord: 280,
-  speed: 1.5,
-  radius: 10,
+  speed: 1,
+  radius: 8,
   degree1: Math.PI / 7,
   degree2: -Math.PI / 7,
   color: "yellow",
@@ -183,77 +129,47 @@ let pacman = {
 function draw() {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   pacman.drawPacman();
-
   blinky.drawGhost();
   pinky.drawGhost();
   inky.drawGhost();
   clyde.drawGhost();
 
-  ghostCalculateTarget(blinky.yCord, blinky.xCord, blinky.speed);
+  movePacman();
 
   checkForWin();
   eatCoins();
   drawMap();
-
-  if (arrowUp && checkForWallUpOrDown(pacman.yCord, pacman.xCord, false)) {
-    rotatePacman(-Math.PI / 4, -Math.PI / 1.3);
-    pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
-    pacman.yCord -= pacman.speed;
-  } else if (
-    arrowDown &&
-    checkForWallUpOrDown(pacman.yCord, pacman.xCord, true)
-  ) {
-    rotatePacman(Math.PI / 1.4, Math.PI / 4);
-    pacman.xCord = (Math.floor(pacman.xCord / 16) + 0.5) * 16;
-    pacman.yCord += pacman.speed;
-  } else if (
-    arrowLeft &&
-    checkForWallLeftOrRight(pacman.yCord, pacman.xCord, false)
-  ) {
-    rotatePacman(-Math.PI / 1.2, Math.PI / 1.3);
-    pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
-    pacman.xCord -= pacman.speed;
-  } else if (
-    arrowRight &&
-    checkForWallLeftOrRight(pacman.yCord, pacman.xCord, true)
-  ) {
-    rotatePacman(Math.PI / 7, -Math.PI / 7);
-    pacman.yCord = (Math.floor(pacman.yCord / 16) + 0.5) * 16;
-    pacman.xCord += pacman.speed;
-  }
+  
   window.requestAnimationFrame(draw);
 }
 
-//If down is true, check for  wall down, else check for wall up
-function checkForWallUpOrDown(yCord, xCord, down) {
-  let value = 1;
-  if (down) {
-    value = -1;
-  }
-  return (
-    board[Math.floor((yCord + 7 * value) / 16) - value][
-      Math.floor(xCord / 16)
-    ] === 0 ||
-    board[Math.floor((yCord + 7 * value) / 16) - value][
-      Math.floor(xCord / 16)
-    ] === 13
-  );
-}
+function movePacman() {
+  let pixelCounter = 0;
 
-//If right is true, check for  wall right, else check for wall left
-function checkForWallLeftOrRight(yCord, xCord, right) {
-  let value = 1;
-  if (right) {
-    value = -1;
+ 
+  while (pixelCounter < 16) {
+    if (direction === "right") {
+      pacman.xCord += pacman.speed;
+    } else if (direction === "left") {
+      pacman.xCord -= pacman.speed;
+    } else if (direction === "up") {
+      pacman.yCord -= pacman.speed;
+    } else if (direction === "down") {
+      pacman.yCord += pacman.speed;
+    }
+
+    pixelCounter++;
   }
-  return (
-    board[Math.floor(yCord / 16)][
-      Math.floor((xCord + 7 * value) / 16) - value
-    ] === 0 ||
-    board[Math.floor(yCord / 16)][
-      Math.floor((xCord + 7 * value) / 16) - value
-    ] === 13
-  );
+
+  if (
+    nextDirection === "up" &&
+    board[(pacman.yCord + pacman.radius) / 16 - 1][(pacman.xCord ) / 16] === 14 
+  ) {
+    direction = nextDirection;
+    pixelCounter = 0;
+  }
+
+  console.log(direction);
 }
 
 function rotatePacman(degree1, degree2) {
@@ -273,41 +189,6 @@ function eatCoins() {
 function checkForWin() {
   if (pacman.coinsEaten === 250) {
     alert("You have won!");
-  }
-}
-
-function ghostCalculateTarget(yCord, xCord, speed) {
-  let possibleDirections = [];
-  let dir1 = "up";
-  let dir2 = "down";
-  let dir3 = "left";
-  let dir4 = "right";
-
-  if (checkForWallUpOrDown(yCord, xCord, false)) {
-    possibleDirections.push(dir1);
-  }
-  if (checkForWallUpOrDown(yCord, xCord, true)) {
-    possibleDirections.push(dir2);
-  }
-  if (checkForWallLeftOrRight(yCord, xCord, false)) {
-    possibleDirections.push(dir3);
-  }
-  if (checkForWallLeftOrRight(yCord, xCord, true)) {
-    possibleDirections.push(dir4);
-  }
-
-  let direction = Math.floor(Math.random() * possibleDirections.length);
-  let chosenDirection = possibleDirections[direction];
-
-
-  if (chosenDirection === "up") {
-    blinky.yCord -= speed;
-  } else if (chosenDirection === "down") {
-    blinky.yCord += speed;
-  } else if (chosenDirection === "left") {
-    blinky.xCord -= speed;
-  } else if (chosenDirection === "right") {
-    blinky.xCord += speed;
   }
 }
 
@@ -380,38 +261,19 @@ function drawMap() {
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      if (checkForWallUpOrDown(pacman.yCord, pacman.xCord, false)) {
-        arrowUp = true;
-        arrowDown = false;
-        arrowLeft = false;
-        arrowRight = false;
-      }
+      nextDirection = "up";
       break;
     case "ArrowDown":
-      if (checkForWallUpOrDown(pacman.yCord, pacman.xCord, true)) {
-        arrowDown = true;
-        arrowUp = false;
-        arrowLeft = false;
-        arrowRight = false;
-      }
+      nextDirection = "down";
       break;
     case "ArrowLeft":
-      if (checkForWallLeftOrRight(pacman.yCord, pacman.xCord, false)) {
-        arrowLeft = true;
-        arrowUp = false;
-        arrowDown = false;
-        arrowRight = false;
-      }
+      nextDirection = "left";
       break;
     case "ArrowRight":
-      if (checkForWallLeftOrRight(pacman.yCord, pacman.xCord, true)) {
-        arrowRight = true;
-        arrowUp = false;
-        arrowLeft = false;
-        arrowDown = false;
-      }
+      nextDirection = "right";
       break;
   }
 });
+
 
 draw();
