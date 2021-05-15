@@ -94,6 +94,7 @@ const ctx = canvas.getContext("2d");
 
 let direction = "right";
 let nextDirection = "";
+let pixelCounter = 0;
 
 let blinky = new Ghost(175, 270, 16, 1, "./images/rosekane_44.png", "up");
 let pinky = new Ghost(200, 270, 16, 1, "./images/rosekane_23.png", "up");
@@ -102,7 +103,7 @@ let clyde = new Ghost(250, 270, 16, 1, "./images/rosekane_27.png", "up");
 
 let pacman = {
   xCord: 16,
-  yCord: 280,
+  yCord: 272,
   speed: 1,
   radius: 8,
   degree1: Math.PI / 7,
@@ -113,7 +114,7 @@ let pacman = {
     ctx.beginPath();
     ctx.arc(
       this.xCord,
-      this.yCord,
+      this.yCord + 8, 
       this.radius,
       this.degree1,
       this.degree2,
@@ -139,15 +140,12 @@ function draw() {
   checkForWin();
   eatCoins();
   drawMap();
-  
+
   window.requestAnimationFrame(draw);
 }
 
 function movePacman() {
-  let pixelCounter = 0;
-
- 
-  while (pixelCounter < 16) {
+  if (pixelCounter < 16) {
     if (direction === "right") {
       pacman.xCord += pacman.speed;
     } else if (direction === "left") {
@@ -161,12 +159,45 @@ function movePacman() {
     pixelCounter++;
   }
 
-  if (
-    nextDirection === "up" &&
-    board[(pacman.yCord + pacman.radius) / 16 - 1][(pacman.xCord ) / 16] === 14 
-  ) {
+  if (checkUp() || checkDown() || checkLeft() || checkRight()) {
     direction = nextDirection;
     pixelCounter = 0;
+  }
+
+  function checkUp() {
+    return (
+      pixelCounter === 16 &&
+      nextDirection === "up" &&
+      (board[pacman.yCord / 16 - 1][pacman.xCord / 16] === 0 ||
+        board[pacman.yCord / 16 - 1][pacman.xCord / 16] === 13)
+    );
+  }
+
+  function checkDown() {
+    return (
+      pixelCounter === 16 &&
+      nextDirection === "down" &&
+      (board[pacman.yCord / 16 + 1][pacman.xCord / 16] === 0 ||
+        board[pacman.yCord / 16 + 1][pacman.xCord / 16] === 13)
+    );
+  }
+
+  function checkLeft() {
+    return (
+      pixelCounter === 16 &&
+      nextDirection === "left" &&
+      (board[pacman.yCord / 16][pacman.xCord / 16 - 1] === 0 ||
+        board[pacman.yCord / 16][pacman.xCord / 16 - 1] === 13)
+    );
+  }
+
+  function checkRight() {
+    return (
+      pixelCounter === 16 &&
+      nextDirection === "right" &&
+      (board[pacman.yCord / 16][pacman.xCord / 16 + 1] === 0 ||
+        board[pacman.yCord / 16][pacman.xCord / 16 + 1] === 13)
+    );
   }
 
   console.log(direction);
@@ -274,6 +305,5 @@ window.addEventListener("keydown", (e) => {
       break;
   }
 });
-
 
 draw();
