@@ -15,6 +15,11 @@
 //12: round corner rightdown
 //13: coin
 
+const BOARD_PROPS = {
+  EMPTY: 0,
+  COIN: 13,
+};
+
 // prettier-ignore
 let board = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -92,7 +97,7 @@ class Ghost {
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let direction = "right";
+let direction = "";
 let nextDirection = "";
 let pixelCounter = 0;
 
@@ -113,14 +118,14 @@ let pacman = {
   drawPacman: function () {
     ctx.beginPath();
     ctx.arc(
-      this.xCord,
-      this.yCord + 8, 
+      this.xCord + this.radius,
+      this.yCord + this.radius,
       this.radius,
       this.degree1,
       this.degree2,
       false
     );
-    ctx.lineTo(this.xCord, this.yCord);
+    ctx.lineTo(this.xCord + this.radius, this.yCord + this.radius);
     ctx.closePath();
     ctx.fillStyle = this.color;
     ctx.fill();
@@ -136,12 +141,15 @@ function draw() {
   clyde.drawGhost();
 
   movePacman();
-
   checkForWin();
   eatCoins();
   drawMap();
 
   window.requestAnimationFrame(draw);
+}
+
+function cordToArray(cord) {
+  return cord / 16;
 }
 
 function movePacman() {
@@ -168,8 +176,10 @@ function movePacman() {
     return (
       pixelCounter === 16 &&
       nextDirection === "up" &&
-      (board[pacman.yCord / 16 - 1][pacman.xCord / 16] === 0 ||
-        board[pacman.yCord / 16 - 1][pacman.xCord / 16] === 13)
+      (board[cordToArray(pacman.yCord) - 1][cordToArray(pacman.xCord)] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(pacman.yCord) - 1][cordToArray(pacman.xCord)] ===
+          BOARD_PROPS.COIN)
     );
   }
 
@@ -177,8 +187,10 @@ function movePacman() {
     return (
       pixelCounter === 16 &&
       nextDirection === "down" &&
-      (board[pacman.yCord / 16 + 1][pacman.xCord / 16] === 0 ||
-        board[pacman.yCord / 16 + 1][pacman.xCord / 16] === 13)
+      (board[cordToArray(pacman.yCord) + 1][cordToArray(pacman.xCord)] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(pacman.yCord) + 1][cordToArray(pacman.xCord)] ===
+          BOARD_PROPS.COIN)
     );
   }
 
@@ -186,8 +198,10 @@ function movePacman() {
     return (
       pixelCounter === 16 &&
       nextDirection === "left" &&
-      (board[pacman.yCord / 16][pacman.xCord / 16 - 1] === 0 ||
-        board[pacman.yCord / 16][pacman.xCord / 16 - 1] === 13)
+      (board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) - 1] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) - 1] ===
+          BOARD_PROPS.COIN)
     );
   }
 
@@ -195,24 +209,22 @@ function movePacman() {
     return (
       pixelCounter === 16 &&
       nextDirection === "right" &&
-      (board[pacman.yCord / 16][pacman.xCord / 16 + 1] === 0 ||
-        board[pacman.yCord / 16][pacman.xCord / 16 + 1] === 13)
+      (board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) + 1] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) + 1] ===
+          BOARD_PROPS.COIN)
     );
   }
-
-  console.log(direction);
-}
-
-function rotatePacman(degree1, degree2) {
-  pacman.degree1 = degree1;
-  pacman.degree2 = degree2;
 }
 
 function eatCoins() {
   if (
-    board[Math.floor(pacman.yCord / 16)][Math.floor(pacman.xCord / 16)] === 13
+    board[cordToArray(pacman.yCord)] !== undefined &&
+    board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord)] ===
+      BOARD_PROPS.COIN
   ) {
-    board[Math.floor(pacman.yCord / 16)][Math.floor(pacman.xCord / 16)] = 0;
+    board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord)] =
+      BOARD_PROPS.EMPTY;
     pacman.coinsEaten++;
   }
 }
