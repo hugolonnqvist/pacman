@@ -140,6 +140,8 @@ function draw() {
   inky.drawGhost();
   clyde.drawGhost();
 
+  rotatePacman();
+
   movePacman();
   checkForWin();
   eatCoins();
@@ -150,6 +152,25 @@ function draw() {
 
 function cordToArray(cord) {
   return cord / 16;
+}
+
+function rotatePacman() {
+  if (direction === "up") {
+    pacman.degree1 = -Math.PI / 4;
+    pacman.degree2 = -Math.PI / 1.4;
+  }
+  if (direction === "down") {
+    pacman.degree1 = Math.PI / 1.4;
+    pacman.degree2 = Math.PI / 4.2;
+  }
+  if (direction === "left") {
+    pacman.degree1 = -Math.PI / 1.2;
+    pacman.degree2 = Math.PI / 1.2;
+  }
+  if (direction === "right") {
+    pacman.degree1 = Math.PI / 7;
+    pacman.degree2 = -Math.PI / 7;
+  }
 }
 
 function movePacman() {
@@ -215,6 +236,10 @@ function movePacman() {
           BOARD_PROPS.COIN)
     );
   }
+}
+
+function moveGhost() {
+  
 }
 
 function eatCoins() {
