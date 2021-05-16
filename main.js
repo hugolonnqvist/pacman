@@ -37,9 +37,9 @@ let board = [
   [4,1,1,1,1,5,13,2,4,1,1,5,13,2,2,13,3,1,1,6,2,13,3,1,1,1,1,6],
   [0,0,0,0,0,2,13,2,3,1,1,6,0,4,6,0,4,1,1,5,2,13,2,0,0,0,0,0],
   [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
-  [0,0,0,0,0,2,13,2,2,0,9,7,7,7,7,7,7,11,0,2,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,9,7,7,0,0,7,7,11,0,2,2,13,2,0,0,0,0,0],
   [1,1,1,1,1,6,13,4,6,0,8,0,0,0,0,0,0,8,0,4,6,13,4,1,1,1,1,1],
-  [0,0,0,0,0,0,13,0,0,0,8,0,14,15,16,17,0,8,0,0,0,13,0,0,0,0,0,0],
+  [0,0,0,0,0,0,13,0,0,0,8,0,0,0,0,0,0,8,0,0,0,13,0,0,0,0,0,0],
   [1,1,1,1,1,5,13,3,5,0,8,0,0,0,0,0,0,8,0,3,5,13,3,1,1,1,1,1],
   [0,0,0,0,0,2,13,2,2,0,10,7,7,7,7,7,7,12,0,2,2,13,2,0,0,0,0,0],
   [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
@@ -97,14 +97,17 @@ class Ghost {
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let direction = "";
+let direction = "right";
 let nextDirection = "";
 let pixelCounter = 0;
 
-let blinky = new Ghost(175, 270, 16, 1, "./images/rosekane_44.png", "up");
-let pinky = new Ghost(200, 270, 16, 1, "./images/rosekane_23.png", "up");
-let inky = new Ghost(225, 270, 16, 1, "./images/rosekane_19.png", "up");
-let clyde = new Ghost(250, 270, 16, 1, "./images/rosekane_27.png", "up");
+let ghostDirection = "right";
+let ghostPixelCounter = 0;
+
+let blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png", "up");
+let pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png", "up");
+let inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png", "up");
+let clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png", "up");
 
 let pacman = {
   xCord: 16,
@@ -140,9 +143,14 @@ function draw() {
   inky.drawGhost();
   clyde.drawGhost();
 
-  rotatePacman();
+  
 
   movePacman();
+  moveGhost();
+
+  rotatePacman();
+
+  
   checkForWin();
   eatCoins();
   drawMap();
@@ -184,7 +192,6 @@ function movePacman() {
     } else if (direction === "down") {
       pacman.yCord += pacman.speed;
     }
-
     pixelCounter++;
   }
 
@@ -239,7 +246,83 @@ function movePacman() {
 }
 
 function moveGhost() {
-  
+  let directions = [];
+
+  if (ghostPixelCounter < 16) {
+    if (ghostDirection === "right") {
+      blinky.xCord += blinky.speed;
+    } else if (ghostDirection === "left" && ghostDirection !== "right") {
+      blinky.xCord -= blinky.speed;
+    } else if (ghostDirection === "up") {
+      blinky.yCord -= blinky.speed;
+    } else if (ghostDirection === "down") {
+      blinky.yCord += blinky.speed;
+    }
+    ghostPixelCounter++;
+  }
+  if (ghostCheckRight()) {
+    directions.push("right");
+  }
+  if (ghostCheckLeft()) {
+    directions.push("left");
+  }
+  if (ghostCheckUp()) {
+    directions.push("up");
+  }
+  if (ghostCheckDown()) {
+    directions.push("down");
+  }
+
+  if (ghostPixelCounter === 16) {
+    ghostDirection = directions[Math.floor(Math.random() * directions.length)];
+    directions.splice(0, directions.length);
+    ghostPixelCounter = 0;
+  }
+
+  function ghostCheckRight() {
+    return (
+      pixelCounter === 16 &&
+      ghostDirection !== "left" &&
+      board[cordToArray(blinky.yCord)] &&
+      (board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) + 1] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) + 1] ===
+          BOARD_PROPS.COIN)
+    );
+  }
+  function ghostCheckLeft() {
+    return (
+      pixelCounter === 16 &&
+      ghostDirection !== "right" &&
+      board[cordToArray(blinky.yCord)] &&
+      (board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) - 1] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) - 1] ===
+          BOARD_PROPS.COIN)
+    );
+  }
+  function ghostCheckUp() {
+    return (
+      pixelCounter === 16 &&
+      ghostDirection !== "down" &&
+      board[cordToArray(blinky.yCord) - 1] &&
+      (board[cordToArray(blinky.yCord) - 1][cordToArray(blinky.xCord)] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(blinky.yCord) - 1][cordToArray(blinky.xCord)] ===
+          BOARD_PROPS.COIN)
+    );
+  }
+  function ghostCheckDown() {
+    return (
+      pixelCounter === 16 &&
+      ghostDirection !== "up" &&
+      board[cordToArray(blinky.yCord) + 1] &&
+      (board[cordToArray(blinky.yCord) + 1][cordToArray(blinky.xCord)] ===
+        BOARD_PROPS.EMPTY ||
+        board[cordToArray(blinky.yCord) + 1][cordToArray(blinky.xCord)] ===
+          BOARD_PROPS.COIN)
+    );
+  }
 }
 
 function eatCoins() {
