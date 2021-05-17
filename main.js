@@ -62,12 +62,14 @@ let board = [
 ];
 
 class Ghost {
-  constructor(xCord, yCord, size, speed, imgSrc) {
+  constructor(xCord, yCord, size, speed, imgSrc, releaseCounter) {
     this.xCord = xCord;
     this.yCord = yCord;
     this.size = size;
     this.speed = speed;
     this.imgSrc = imgSrc;
+    this.releaseCounter = releaseCounter;
+    this.startyCord = yCord - 48;
     this.direction = "";
     this.pixelCounter = 0;
   }
@@ -100,15 +102,10 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const runCanvas = true;
 
-let direction = "right";
-let nextDirection = "";
-let pixelCounter = 0;
-
-const blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png");
-const pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png");
-const inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png");
-const clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png");
-
+const blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png", 5000);
+const pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png", 10000);
+const inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png", 15000);
+const clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png", 20000);
 const ghosts = [blinky, pinky, inky, clyde];
 
 const pacman = {
@@ -120,6 +117,9 @@ const pacman = {
   degree2: -Math.PI / 7,
   color: "yellow",
   coinsEaten: 0,
+  direction: "right",
+  nextDirection: "",
+  pixelCounter: 0,
   drawPacman: function () {
     ctx.beginPath();
     ctx.arc(
@@ -137,6 +137,7 @@ const pacman = {
   },
 };
 
+//Main function, which runs all the time
 function draw() {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   drawMap();
@@ -169,48 +170,49 @@ function cordToArray(cord) {
 }
 
 function rotatePacman() {
-  if (direction === "up") {
+  if (pacman.direction === "up") {
     pacman.degree1 = -Math.PI / 4;
     pacman.degree2 = -Math.PI / 1.4;
   }
-  if (direction === "down") {
+  if (pacman.direction === "down") {
     pacman.degree1 = Math.PI / 1.4;
     pacman.degree2 = Math.PI / 4.2;
   }
-  if (direction === "left") {
+  if (pacman.direction === "left") {
     pacman.degree1 = -Math.PI / 1.2;
     pacman.degree2 = Math.PI / 1.2;
   }
-  if (direction === "right") {
+  if (pacman.direction === "right") {
     pacman.degree1 = Math.PI / 7;
     pacman.degree2 = -Math.PI / 7;
   }
 }
 
 function movePacman() {
-  if (pixelCounter < 16) {
-    if (direction === "right") {
+  if (pacman.pixelCounter < 16) {
+    if (pacman.direction === "right") {
       pacman.xCord += pacman.speed;
-    } else if (direction === "left") {
+    } else if (pacman.direction === "left") {
       pacman.xCord -= pacman.speed;
-    } else if (direction === "up") {
+    } else if (pacman.direction === "up") {
       pacman.yCord -= pacman.speed;
-    } else if (direction === "down") {
+    } else if (pacman.direction === "down") {
       pacman.yCord += pacman.speed;
     }
     rotatePacman();
-    pixelCounter++;
+    pacman.pixelCounter++;
   }
 
   if (checkUp() || checkDown() || checkLeft() || checkRight()) {
-    direction = nextDirection;
-    pixelCounter = 0;
+    pacman.direction = pacman.nextDirection;
+    pacman.pixelCounter = 0;
   }
 
   function checkUp() {
     return (
-      pixelCounter === 16 &&
-      nextDirection === "up" &&
+      pacman.pixelCounter === 16 &&
+      pacman.nextDirection === "up" &&
+      board[cordToArray(pacman.yCord)] !== undefined &&
       (board[cordToArray(pacman.yCord) - 1][cordToArray(pacman.xCord)] ===
         BOARD_PROPS.EMPTY ||
         board[cordToArray(pacman.yCord) - 1][cordToArray(pacman.xCord)] ===
@@ -220,8 +222,9 @@ function movePacman() {
 
   function checkDown() {
     return (
-      pixelCounter === 16 &&
-      nextDirection === "down" &&
+      pacman.pixelCounter === 16 &&
+      pacman.nextDirection === "down" &&
+      board[cordToArray(pacman.yCord)] !== undefined &&
       (board[cordToArray(pacman.yCord) + 1][cordToArray(pacman.xCord)] ===
         BOARD_PROPS.EMPTY ||
         board[cordToArray(pacman.yCord) + 1][cordToArray(pacman.xCord)] ===
@@ -231,8 +234,9 @@ function movePacman() {
 
   function checkLeft() {
     return (
-      pixelCounter === 16 &&
-      nextDirection === "left" &&
+      pacman.pixelCounter === 16 &&
+      pacman.nextDirection === "left" &&
+      board[cordToArray(pacman.yCord)] !== undefined &&
       (board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) - 1] ===
         BOARD_PROPS.EMPTY ||
         board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) - 1] ===
@@ -242,8 +246,9 @@ function movePacman() {
 
   function checkRight() {
     return (
-      pixelCounter === 16 &&
-      nextDirection === "right" &&
+      pacman.pixelCounter === 16 &&
+      pacman.nextDirection === "right" &&
+      board[cordToArray(pacman.yCord)] !== undefined &&
       (board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) + 1] ===
         BOARD_PROPS.EMPTY ||
         board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord) + 1] ===
@@ -355,25 +360,25 @@ function ghostCheckWall(pixelCounter, direction, xCord, yCord, directions) {
 }
 
 function startGame() {
-  setTimeout(releaseBlinky, 5000);
-  setTimeout(releasePinky, 10000);
-  setTimeout(releaseInky, 15000);
-  setTimeout(releaseClyde, 20000);
+  setTimeout(releaseBlinky, blinky.releaseCounter);
+  setTimeout(releasePinky, pinky.releaseCounter);
+  setTimeout(releaseInky, inky.releaseCounter);
+  setTimeout(releaseClyde, clyde.releaseCounter);
 
   function releaseBlinky() {
-    blinky.yCord -= 48;
+    blinky.yCord = blinky.startyCord;
   }
 
   function releasePinky() {
-    pinky.yCord -= 48;
+    pinky.yCord = pinky.startyCord;
   }
 
   function releaseInky() {
-    inky.yCord -= 48;
+    inky.yCord = inky.startyCord;
   }
 
   function releaseClyde() {
-    clyde.yCord -= 48;
+    clyde.yCord = clyde.startyCord;
   }
 }
 
@@ -482,20 +487,19 @@ function drawMap() {
   }
 }
 
-//Pacman keeps going in a direction until another arrow direction is pressed
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
-      nextDirection = "up";
+      pacman.nextDirection = "up";
       break;
     case "ArrowDown":
-      nextDirection = "down";
+      pacman.nextDirection = "down";
       break;
     case "ArrowLeft":
-      nextDirection = "left";
+      pacman.nextDirection = "left";
       break;
     case "ArrowRight":
-      nextDirection = "right";
+      pacman.nextDirection = "right";
       break;
   }
 });
