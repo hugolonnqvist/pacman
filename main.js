@@ -37,7 +37,7 @@ let board = [
   [4,1,1,1,1,5,13,2,4,1,1,5,13,2,2,13,3,1,1,6,2,13,3,1,1,1,1,6],
   [0,0,0,0,0,2,13,2,3,1,1,6,0,4,6,0,4,1,1,5,2,13,2,0,0,0,0,0],
   [0,0,0,0,0,2,13,2,2,0,0,0,0,0,0,0,0,0,0,2,2,13,2,0,0,0,0,0],
-  [0,0,0,0,0,2,13,2,2,0,9,7,7,0,0,7,7,11,0,2,2,13,2,0,0,0,0,0],
+  [0,0,0,0,0,2,13,2,2,0,9,7,7,7,7,7,7,11,0,2,2,13,2,0,0,0,0,0],
   [1,1,1,1,1,6,13,4,6,0,8,0,0,0,0,0,0,8,0,4,6,13,4,1,1,1,1,1],
   [0,0,0,0,0,0,13,0,0,0,8,0,0,0,0,0,0,8,0,0,0,13,0,0,0,0,0,0],
   [1,1,1,1,1,5,13,3,5,0,8,0,0,0,0,0,0,8,0,3,5,13,3,1,1,1,1,1],
@@ -61,13 +61,14 @@ let board = [
 ];
 
 class Ghost {
-  constructor(xCord, yCord, size, speed, imgSrc, direction) {
+  constructor(xCord, yCord, size, speed, imgSrc, direction, pixelCounter) {
     this.xCord = xCord;
     this.yCord = yCord;
     this.size = size;
     this.speed = speed;
     this.imgSrc = imgSrc;
     this.direction = direction;
+    this.pixelCounter = pixelCounter;
   }
 
   drawGhost() {
@@ -101,13 +102,10 @@ let direction = "right";
 let nextDirection = "";
 let pixelCounter = 0;
 
-let ghostDirection = "right";
-let ghostPixelCounter = 0;
-
-let blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png", "up");
-let pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png", "up");
-let inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png", "up");
-let clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png", "up");
+let blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png", "right", 0);
+let pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png", "up", 0);
+let inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png", "up", 0);
+let clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png", "up", 0);
 
 let pacman = {
   xCord: 16,
@@ -143,20 +141,30 @@ function draw() {
   inky.drawGhost();
   clyde.drawGhost();
 
-  
-
   movePacman();
-  moveGhost();
+
+  moveBlinky();
+  movePinky();
+  moveInky();
+  moveClyde();
+
+  killPacman(blinky.xCord, blinky.yCord);
+  killPacman(pinky.xCord, pinky.yCord);
+  killPacman(inky.xCord, inky.yCord);
+  killPacman(clyde.xCord, clyde.yCord);
 
   rotatePacman();
-
-  
-  checkForWin();
   eatCoins();
+  checkForWin();
   drawMap();
 
   window.requestAnimationFrame(draw);
 }
+
+setInterval(releaseBlinky, 5000);
+setInterval(releasePinky, 10000);
+setInterval(releaseInky, 15000);
+setInterval(releaseClyde, 20000);
 
 function cordToArray(cord) {
   return cord / 16;
@@ -192,6 +200,7 @@ function movePacman() {
     } else if (direction === "down") {
       pacman.yCord += pacman.speed;
     }
+
     pixelCounter++;
   }
 
@@ -245,84 +254,201 @@ function movePacman() {
   }
 }
 
-function moveGhost() {
+function moveBlinky() {
   let directions = [];
 
-  if (ghostPixelCounter < 16) {
-    if (ghostDirection === "right") {
+  if (blinky.pixelCounter < 16) {
+    if (blinky.direction === "right") {
       blinky.xCord += blinky.speed;
-    } else if (ghostDirection === "left" && ghostDirection !== "right") {
+    } else if (blinky.direction === "left") {
       blinky.xCord -= blinky.speed;
-    } else if (ghostDirection === "up") {
+    } else if (blinky.direction === "up") {
       blinky.yCord -= blinky.speed;
-    } else if (ghostDirection === "down") {
+    } else if (blinky.direction === "down") {
       blinky.yCord += blinky.speed;
     }
-    ghostPixelCounter++;
+    blinky.pixelCounter++;
   }
-  if (ghostCheckRight()) {
+
+  ghostCheckWall(
+    blinky.pixelCounter,
+    blinky.direction,
+    blinky.xCord,
+    blinky.yCord,
+    directions
+  );
+
+  if (blinky.pixelCounter === 16) {
+    blinky.direction =
+      directions[Math.floor(Math.random() * directions.length)];
+    directions.splice(0, directions.length);
+    blinky.pixelCounter = 0;
+  }
+}
+
+function movePinky() {
+  let directions = [];
+
+  if (pinky.pixelCounter < 16) {
+    if (pinky.direction === "right") {
+      pinky.xCord += pinky.speed;
+    } else if (pinky.direction === "left") {
+      pinky.xCord -= pinky.speed;
+    } else if (pinky.direction === "up") {
+      pinky.yCord -= pinky.speed;
+    } else if (pinky.direction === "down") {
+      pinky.yCord += pinky.speed;
+    }
+    pinky.pixelCounter++;
+  }
+
+  ghostCheckWall(
+    pinky.pixelCounter,
+    pinky.direction,
+    pinky.xCord,
+    pinky.yCord,
+    directions
+  );
+
+  if (pinky.pixelCounter === 16) {
+    pinky.direction = directions[Math.floor(Math.random() * directions.length)];
+    directions.splice(0, directions.length);
+    pinky.pixelCounter = 0;
+  }
+}
+
+function moveInky() {
+  let directions = [];
+
+  if (inky.pixelCounter < 16) {
+    if (inky.direction === "right") {
+      inky.xCord += inky.speed;
+    } else if (inky.direction === "left") {
+      inky.xCord -= inky.speed;
+    } else if (inky.direction === "up") {
+      inky.yCord -= inky.speed;
+    } else if (inky.direction === "down") {
+      inky.yCord += inky.speed;
+    }
+    inky.pixelCounter++;
+  }
+
+  ghostCheckWall(
+    inky.pixelCounter,
+    inky.direction,
+    inky.xCord,
+    inky.yCord,
+    directions
+  );
+
+  if (inky.pixelCounter === 16) {
+    inky.direction = directions[Math.floor(Math.random() * directions.length)];
+    directions.splice(0, directions.length);
+    inky.pixelCounter = 0;
+  }
+}
+
+function moveClyde() {
+  let directions = [];
+
+  if (clyde.pixelCounter < 16) {
+    if (clyde.direction === "right") {
+      clyde.xCord += clyde.speed;
+    } else if (clyde.direction === "left") {
+      clyde.xCord -= clyde.speed;
+    } else if (clyde.direction === "up") {
+      clyde.yCord -= clyde.speed;
+    } else if (clyde.direction === "down") {
+      clyde.yCord += clyde.speed;
+    }
+    clyde.pixelCounter++;
+  }
+
+  ghostCheckWall(
+    clyde.pixelCounter,
+    clyde.direction,
+    clyde.xCord,
+    clyde.yCord,
+    directions
+  );
+
+  if (clyde.pixelCounter === 16) {
+    clyde.direction = directions[Math.floor(Math.random() * directions.length)];
+    directions.splice(0, directions.length);
+    clyde.pixelCounter = 0;
+  }
+}
+
+function ghostCheckWall(pixelCounter, direction, xCord, yCord, directions) {
+  if (ghostCheckRight(pixelCounter, direction, xCord, yCord)) {
     directions.push("right");
   }
-  if (ghostCheckLeft()) {
+  if (ghostCheckLeft(pixelCounter, direction, xCord, yCord)) {
     directions.push("left");
   }
-  if (ghostCheckUp()) {
+  if (ghostCheckUp(pixelCounter, direction, xCord, yCord)) {
     directions.push("up");
   }
-  if (ghostCheckDown()) {
+  if (ghostCheckDown(pixelCounter, direction, xCord, yCord)) {
     directions.push("down");
   }
 
-  if (ghostPixelCounter === 16) {
-    ghostDirection = directions[Math.floor(Math.random() * directions.length)];
-    directions.splice(0, directions.length);
-    ghostPixelCounter = 0;
-  }
-
-  function ghostCheckRight() {
+  function ghostCheckRight(ghostPixelCounter, ghostDirection, xCord, yCord) {
     return (
-      pixelCounter === 16 &&
+      ghostPixelCounter === 16 &&
       ghostDirection !== "left" &&
-      board[cordToArray(blinky.yCord)] &&
-      (board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) + 1] ===
+      board[cordToArray(yCord)] &&
+      (board[cordToArray(yCord)][cordToArray(xCord) + 1] ===
         BOARD_PROPS.EMPTY ||
-        board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) + 1] ===
-          BOARD_PROPS.COIN)
+        board[cordToArray(yCord)][cordToArray(xCord) + 1] === BOARD_PROPS.COIN)
     );
   }
-  function ghostCheckLeft() {
+  function ghostCheckLeft(ghostPixelCounter, ghostDirection, xCord, yCord) {
     return (
-      pixelCounter === 16 &&
+      ghostPixelCounter === 16 &&
       ghostDirection !== "right" &&
-      board[cordToArray(blinky.yCord)] &&
-      (board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) - 1] ===
+      board[cordToArray(yCord)] &&
+      (board[cordToArray(yCord)][cordToArray(xCord) - 1] ===
         BOARD_PROPS.EMPTY ||
-        board[cordToArray(blinky.yCord)][cordToArray(blinky.xCord) - 1] ===
-          BOARD_PROPS.COIN)
+        board[cordToArray(yCord)][cordToArray(xCord) - 1] === BOARD_PROPS.COIN)
     );
   }
-  function ghostCheckUp() {
+  function ghostCheckUp(ghostPixelCounter, ghostDirection, xCord, yCord) {
     return (
-      pixelCounter === 16 &&
+      ghostPixelCounter === 16 &&
       ghostDirection !== "down" &&
-      board[cordToArray(blinky.yCord) - 1] &&
-      (board[cordToArray(blinky.yCord) - 1][cordToArray(blinky.xCord)] ===
+      board[cordToArray(yCord) - 1] &&
+      (board[cordToArray(yCord) - 1][cordToArray(xCord)] ===
         BOARD_PROPS.EMPTY ||
-        board[cordToArray(blinky.yCord) - 1][cordToArray(blinky.xCord)] ===
-          BOARD_PROPS.COIN)
+        board[cordToArray(yCord) - 1][cordToArray(xCord)] === BOARD_PROPS.COIN)
     );
   }
-  function ghostCheckDown() {
+  function ghostCheckDown(ghostPixelCounter, ghostDirection, xCord, yCord) {
     return (
-      pixelCounter === 16 &&
+      ghostPixelCounter === 16 &&
       ghostDirection !== "up" &&
-      board[cordToArray(blinky.yCord) + 1] &&
-      (board[cordToArray(blinky.yCord) + 1][cordToArray(blinky.xCord)] ===
+      board[cordToArray(yCord) + 1] &&
+      (board[cordToArray(yCord) + 1][cordToArray(xCord)] ===
         BOARD_PROPS.EMPTY ||
-        board[cordToArray(blinky.yCord) + 1][cordToArray(blinky.xCord)] ===
-          BOARD_PROPS.COIN)
+        board[cordToArray(yCord) + 1][cordToArray(xCord)] === BOARD_PROPS.COIN)
     );
   }
+}
+
+function releaseBlinky() {
+  blinky.yCord -= 48;
+}
+
+function releasePinky() {
+  pinky.yCord -= 48;
+}
+
+function releaseInky() {
+  inky.yCord -= 48;
+}
+
+function releaseClyde() {
+  clyde.yCord -= 48;
 }
 
 function eatCoins() {
@@ -334,6 +460,12 @@ function eatCoins() {
     board[cordToArray(pacman.yCord)][cordToArray(pacman.xCord)] =
       BOARD_PROPS.EMPTY;
     pacman.coinsEaten++;
+  }
+}
+
+function killPacman(xCord, yCord) {
+  if (pacman.xCord === xCord && pacman.yCord === yCord) {
+    alert("you lost");
   }
 }
 
