@@ -9,7 +9,7 @@
 //Ghost box images:
 //7: straight line horizontal
 //8: straight line downwards
-//9: rond corner leftup
+//9: round corner leftup
 //10: round corner leftdown
 //11: rond corner rightup
 //12: round corner rightdown
@@ -20,6 +20,7 @@ const BOARD_PROPS = {
   COIN: 13,
 };
 
+//Array which equals the board map
 // prettier-ignore
 let board = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -61,14 +62,14 @@ let board = [
 ];
 
 class Ghost {
-  constructor(xCord, yCord, size, speed, imgSrc, direction, pixelCounter) {
+  constructor(xCord, yCord, size, speed, imgSrc) {
     this.xCord = xCord;
     this.yCord = yCord;
     this.size = size;
     this.speed = speed;
     this.imgSrc = imgSrc;
-    this.direction = direction;
-    this.pixelCounter = pixelCounter;
+    this.direction = "";
+    this.pixelCounter = 0;
   }
 
   drawGhost() {
@@ -82,7 +83,7 @@ class Ghost {
     this.yCord -= this.speed;
   }
 
-  moveDowm() {
+  moveDown() {
     this.yCord += this.speed;
   }
 
@@ -97,17 +98,20 @@ class Ghost {
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const runCanvas = true;
 
 let direction = "right";
 let nextDirection = "";
 let pixelCounter = 0;
 
-let blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png", "right", 0);
-let pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png", "up", 0);
-let inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png", "up", 0);
-let clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png", "up", 0);
+const blinky = new Ghost(176, 272, 16, 1, "./images/rosekane_44.png");
+const pinky = new Ghost(208, 272, 16, 1, "./images/rosekane_23.png");
+const inky = new Ghost(224, 272, 16, 1, "./images/rosekane_19.png");
+const clyde = new Ghost(256, 272, 16, 1, "./images/rosekane_27.png");
 
-let pacman = {
+const ghosts = [blinky, pinky, inky, clyde];
+
+const pacman = {
   xCord: 16,
   yCord: 272,
   speed: 1,
@@ -135,36 +139,30 @@ let pacman = {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  drawMap();
+
   pacman.drawPacman();
-  blinky.drawGhost();
-  pinky.drawGhost();
-  inky.drawGhost();
-  clyde.drawGhost();
+  ghosts.forEach((ghost) => {
+    ghost.drawGhost();
+  });
 
-  movePacman();
-
-  moveBlinky();
-  movePinky();
-  moveInky();
-  moveClyde();
+  if (runCanvas) {
+    movePacman();
+    moveAllGhosts();
+  }
 
   killPacman(blinky.xCord, blinky.yCord);
   killPacman(pinky.xCord, pinky.yCord);
   killPacman(inky.xCord, inky.yCord);
   killPacman(clyde.xCord, clyde.yCord);
 
-  rotatePacman();
   eatCoins();
   checkForWin();
-  drawMap();
 
   window.requestAnimationFrame(draw);
 }
 
-setInterval(releaseBlinky, 5000);
-setInterval(releasePinky, 10000);
-setInterval(releaseInky, 15000);
-setInterval(releaseClyde, 20000);
+startGame();
 
 function cordToArray(cord) {
   return cord / 16;
@@ -200,7 +198,7 @@ function movePacman() {
     } else if (direction === "down") {
       pacman.yCord += pacman.speed;
     }
-
+    rotatePacman();
     pixelCounter++;
   }
 
@@ -254,128 +252,49 @@ function movePacman() {
   }
 }
 
-function moveBlinky() {
-  let directions = [];
-
-  if (blinky.pixelCounter < 16) {
-    if (blinky.direction === "right") {
-      blinky.xCord += blinky.speed;
-    } else if (blinky.direction === "left") {
-      blinky.xCord -= blinky.speed;
-    } else if (blinky.direction === "up") {
-      blinky.yCord -= blinky.speed;
-    } else if (blinky.direction === "down") {
-      blinky.yCord += blinky.speed;
-    }
-    blinky.pixelCounter++;
-  }
-
-  ghostCheckWall(
-    blinky.pixelCounter,
-    blinky.direction,
-    blinky.xCord,
-    blinky.yCord,
-    directions
-  );
-
-  if (blinky.pixelCounter === 16) {
-    blinky.direction =
-      directions[Math.floor(Math.random() * directions.length)];
-    directions.splice(0, directions.length);
-    blinky.pixelCounter = 0;
-  }
+function moveAllGhosts() {
+  setTimeout(() => {
+    moveGhost(blinky);
+  }, 5000);
+  setTimeout(() => {
+    moveGhost(pinky);
+  }, 10000);
+  setTimeout(() => {
+    moveGhost(inky);
+  }, 15000);
+  setTimeout(() => {
+    moveGhost(clyde);
+  }, 20000);
 }
 
-function movePinky() {
+function moveGhost(ghost) {
   let directions = [];
 
-  if (pinky.pixelCounter < 16) {
-    if (pinky.direction === "right") {
-      pinky.xCord += pinky.speed;
-    } else if (pinky.direction === "left") {
-      pinky.xCord -= pinky.speed;
-    } else if (pinky.direction === "up") {
-      pinky.yCord -= pinky.speed;
-    } else if (pinky.direction === "down") {
-      pinky.yCord += pinky.speed;
+  if (ghost.pixelCounter < 16) {
+    if (ghost.direction === "right") {
+      ghost.moveRight();
+    } else if (ghost.direction === "left") {
+      ghost.moveLeft();
+    } else if (ghost.direction === "up") {
+      ghost.moveUp();
+    } else if (ghost.direction === "down") {
+      ghost.moveDown();
     }
-    pinky.pixelCounter++;
+    ghost.pixelCounter++;
   }
 
   ghostCheckWall(
-    pinky.pixelCounter,
-    pinky.direction,
-    pinky.xCord,
-    pinky.yCord,
+    ghost.pixelCounter,
+    ghost.direction,
+    ghost.xCord,
+    ghost.yCord,
     directions
   );
 
-  if (pinky.pixelCounter === 16) {
-    pinky.direction = directions[Math.floor(Math.random() * directions.length)];
+  if (ghost.pixelCounter === 16) {
+    ghost.direction = directions[Math.floor(Math.random() * directions.length)];
     directions.splice(0, directions.length);
-    pinky.pixelCounter = 0;
-  }
-}
-
-function moveInky() {
-  let directions = [];
-
-  if (inky.pixelCounter < 16) {
-    if (inky.direction === "right") {
-      inky.xCord += inky.speed;
-    } else if (inky.direction === "left") {
-      inky.xCord -= inky.speed;
-    } else if (inky.direction === "up") {
-      inky.yCord -= inky.speed;
-    } else if (inky.direction === "down") {
-      inky.yCord += inky.speed;
-    }
-    inky.pixelCounter++;
-  }
-
-  ghostCheckWall(
-    inky.pixelCounter,
-    inky.direction,
-    inky.xCord,
-    inky.yCord,
-    directions
-  );
-
-  if (inky.pixelCounter === 16) {
-    inky.direction = directions[Math.floor(Math.random() * directions.length)];
-    directions.splice(0, directions.length);
-    inky.pixelCounter = 0;
-  }
-}
-
-function moveClyde() {
-  let directions = [];
-
-  if (clyde.pixelCounter < 16) {
-    if (clyde.direction === "right") {
-      clyde.xCord += clyde.speed;
-    } else if (clyde.direction === "left") {
-      clyde.xCord -= clyde.speed;
-    } else if (clyde.direction === "up") {
-      clyde.yCord -= clyde.speed;
-    } else if (clyde.direction === "down") {
-      clyde.yCord += clyde.speed;
-    }
-    clyde.pixelCounter++;
-  }
-
-  ghostCheckWall(
-    clyde.pixelCounter,
-    clyde.direction,
-    clyde.xCord,
-    clyde.yCord,
-    directions
-  );
-
-  if (clyde.pixelCounter === 16) {
-    clyde.direction = directions[Math.floor(Math.random() * directions.length)];
-    directions.splice(0, directions.length);
-    clyde.pixelCounter = 0;
+    ghost.pixelCounter = 0;
   }
 }
 
@@ -435,20 +354,27 @@ function ghostCheckWall(pixelCounter, direction, xCord, yCord, directions) {
   }
 }
 
-function releaseBlinky() {
-  blinky.yCord -= 48;
-}
+function startGame() {
+  setTimeout(releaseBlinky, 5000);
+  setTimeout(releasePinky, 10000);
+  setTimeout(releaseInky, 15000);
+  setTimeout(releaseClyde, 20000);
 
-function releasePinky() {
-  pinky.yCord -= 48;
-}
+  function releaseBlinky() {
+    blinky.yCord -= 48;
+  }
 
-function releaseInky() {
-  inky.yCord -= 48;
-}
+  function releasePinky() {
+    pinky.yCord -= 48;
+  }
 
-function releaseClyde() {
-  clyde.yCord -= 48;
+  function releaseInky() {
+    inky.yCord -= 48;
+  }
+
+  function releaseClyde() {
+    clyde.yCord -= 48;
+  }
 }
 
 function eatCoins() {
@@ -464,14 +390,30 @@ function eatCoins() {
 }
 
 function killPacman(xCord, yCord) {
-  if (pacman.xCord === xCord && pacman.yCord === yCord) {
-    alert("you lost");
+  const grid = document.getElementById("mainContainer");
+  if (
+    pacman.xCord < 8 + xCord &&
+    pacman.xCord + 8 > xCord &&
+    pacman.yCord + 8 > yCord &&
+    pacman.yCord < 8 + yCord
+  ) {
+    let wintext = document.createElement("div");
+    wintext.classList.add("winText");
+    wintext.innerHTML = "You lost...";
+    grid.append(wintext);
+    runCanvas = false;
   }
 }
 
 function checkForWin() {
+  const grid = document.getElementById("mainContainer");
   if (pacman.coinsEaten === 250) {
-    alert("You have won!");
+    let wintext = document.createElement("div");
+    wintext.classList.add("winText");
+    wintext.innerHTML = "You won!";
+    grid.append(wintext);
+
+    runCanvas = false;
   }
 }
 
